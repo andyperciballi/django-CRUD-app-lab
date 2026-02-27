@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Wallpaper</h1>
+<p>Are you sure you want to delete this wallpaper by {{ wallpaper.creator }}?</p>
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Yes, Delete">
+  <a href="/wallpapers/{{ wallpaper.id }}/">Cancel</a>
+</form>
+{% endblock %}

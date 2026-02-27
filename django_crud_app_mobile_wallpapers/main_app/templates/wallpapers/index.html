@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Wallpaper Collection</h1>
+</section>
+
+<section class="card-container">
+    {% for wallpaper in object_list %}
+    <a href="{% url 'wallpaper-detail' wallpaper.id %}">
+        <div class="card">
+            <div class="card-content">
+                <div class="card-img-container">
+                    <img src="{{ wallpaper.image_url }}" alt="Wallpaper by {{ wallpaper.creator }}" />
+                </div>
+                <h2 class="card-title">By: {{ wallpaper.creator }}</h2>
+                <p>Source: {{ wallpaper.source }}</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</section>
+
+{% endblock %}

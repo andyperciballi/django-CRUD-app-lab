@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="cat-container">
+    <div class="cat-img">
+        <img src="{{ wallpaper.image_url }}" alt="Wallpaper by {{ wallpaper.creator }}" style="max-width:300px;" />
+    </div>
+    <div class="cat-details">
+        <h1>By: {{ wallpaper.creator }}</h1>
+        <h2>Source: {{ wallpaper.source }}</h2>
+    </div>
+</section>
+
+<div class="cat-action">
+    <a href="{% url 'wallpaper-update' wallpaper.id %}" class="btn warn">Edit</a>
+    <a href="{% url 'wallpaper-delete' wallpaper.id %}" class="btn danger">Delete</a>
+</div>
+
+<div class="feedings-toy-container">
+  <section class="feedings">
+    <div class="subsection-title">
+      <h2>Use Logs</h2>
+    </div>
+    <form action="{% url 'add-use-log' wallpaper.id %}" method="post">
+      {% csrf_token %}
+      {{ use_log_form.as_p }}
+      <button type="submit" class="btn submit">Add Use Log</button>
+    </form>
+    {% if wallpaper.use_logs.all.count %}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Context</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in wallpaper.use_logs.all %}
+        <tr>
+          <td>{{ log.date }}</td>
+          <td>{{ log.get_context_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>⚠️ No use logs yet!</p>
+    {% endif %}
+  </section>
+
+<section class="toys">
+    <div class="subsection-title">
+      <h2>Tags</h2>
+    </div>
+    
+    <h3>Assigned Tags</h3>
+    <div class="subsection-content">
+      {% if wallpaper.tags.all.count %}
+        {% for tag in wallpaper.tags.all %}
+          <div class="toy-container">
+            <div class="color-block" style="background-color: {{ tag.color }}"></div>
+            <a href="{% url 'tag-detail' tag.id %}">
+              <p>{{ tag.name }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No tags assigned yet.</p>
+      {% endif %}
+    </div>
+
+    <h3>Available Tags</h3>
+    <div class="subsection-content">
+      {% if tags.count %}
+        {% for tag in tags.all %}
+          <div class="toy-container">
+            <div class="color-block" style="background-color: {{ tag.color }}"></div>
+            <a href="{% url 'tag-detail' tag.id %}">
+              <p>{{ tag.name }}</p>
+            </a>
+            <form action="{% url 'associate-tag' wallpaper.id tag.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn submit">Add Tag</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>All available tags have been added 🥳</p>
+      {% endif %}
+    </div>
+  </section>
+
+{% endblock %}
